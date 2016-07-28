@@ -24,7 +24,7 @@ LOG_FILE = ''  # where stored your log file
 # URL FOR ELASTICSEARCH
 ES_URL = 'http://localhost:9200'
 app.config.update(
-    DEBUG=True,
+    DEBUG=False,
     MAIL_SERVER=EMAIL_SERVER,
     MAIL_PORT=EMAIL_PORT,
     MAIL_USE_SSL=True,
