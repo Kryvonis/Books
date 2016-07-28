@@ -21,6 +21,8 @@ MAIL_PASSWORD = ''  # your email pass
 # LOG FILE SRC
 LOG_FILE = ''  # where stored your log file
 
+# URL FOR ELASTICSEARCH
+ES_URL = 'http://localhost:9200'
 app.config.update(
     DEBUG=True,
     MAIL_SERVER=EMAIL_SERVER,
@@ -108,7 +110,7 @@ def search_text(email, search_text):
 
     result_search = 'Result by searching with word: "{}"\n'.format(search_text)
     # send search request with data
-    res = requests.get('http://localhost:9200/books/_search?pretty', data=request_data).json()
+    res = requests.get('{0}/books/_search?pretty'.format(ES_URL), data=request_data).json()
 
     # parsing response from request
     if res['hits']['total']:  # checking if we have some result
@@ -116,7 +118,7 @@ def search_text(email, search_text):
             for hit in res['hits']['hits']:
                 book_id = hit['_id']
                 book_name = hit['_type']
-                data_book = requests.get('http://localhost:9200/books/{0}/{1}?pretty'.format(book_name, book_id),
+                data_book = requests.get('{0}/books/{1}/{2}?pretty'.format(ES_URL,book_name, book_id),
                                          data=request_data).json()
                 book_chapter = data_book['_source']['chapter']
                 book_page = data_book['_id']
@@ -152,7 +154,7 @@ def send_email(message_string, email):
         msg = Message(recipients=[email],
                       body=message_string,
                       subject=subject,
-                      sender="kryvonis.artem@gmail.com")
+                      sender=MAIL_USERNAME)
         conn.send(msg)
 
 
