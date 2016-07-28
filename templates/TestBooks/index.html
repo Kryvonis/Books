@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="books" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BooksSearch</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+</head>
+<body>
+<div ng-controller="BooksSearchController as bs">
+    <div class="container">
+        <p>
+        <h1>This is simmple text search in collections of books</h1></p>
+        <h3>Write what word you want to find and your email addres.
+            Result of search will be send to email</h3>
+
+        <form ng-submit="startSearch(searchText,emailText)" name="searchform">
+            {#        <input class="button" type="submit" value="search">#}
+            <div class="col-lg-10">
+                <input ng-model="searchText" ng-pattern="textValidation" type="search" class="form-control"
+                       placeholder="SearchText"
+                       aria-describedby="basic-addon1"
+                       required>
+
+            </div>
+            <div class="col-lg-10">
+                <div class="input-group">
+                    <input ng-model="emailText" type="email" class="form-control" placeholder="Email" required>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Go!</button>
+                </span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="/static/js/index.js"></script>
+<script src="/static/js/jquery-3.1.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
