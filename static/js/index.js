@@ -12,4 +12,5 @@ angular.module('books', [])
                     $window.location.href = '/err'
                 });
             };
-        }]);
+        }
+    ]);
