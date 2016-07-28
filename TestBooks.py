@@ -118,7 +118,7 @@ def search_text(email, search_text):
             for hit in res['hits']['hits']:
                 book_id = hit['_id']
                 book_name = hit['_type']
-                data_book = requests.get('{0}/books/{1}/{2}?pretty'.format(ES_URL,book_name, book_id),
+                data_book = requests.get('{0}/books/{1}/{2}?pretty'.format(ES_URL, book_name, book_id),
                                          data=request_data).json()
                 book_chapter = data_book['_source']['chapter']
                 book_page = data_book['_id']
@@ -178,6 +178,16 @@ def get_custom_logger():
     handler = logging.FileHandler(LOG_FILE, 'w')
     logger.addHandler(handler)
     return logger
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('TestBooks/error404.html'), 404
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('TestBooks/error500.html'), 500
 
 
 if __name__ == '__main__':
