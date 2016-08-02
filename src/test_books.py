@@ -48,7 +48,6 @@ def index():
     :return rendered page in html:
     """
 
-
     return render_template('TestBooks/index.html')
 
 
@@ -62,9 +61,11 @@ def search_run():
     :return : HTTP status OK
     """
     try:
+        app.logger.warning('AFTER REQUEST')
         json = request.json
         session['email'] = json['email']
-        search_text(json['email'], json['searchText'])
+        app.logger.warning('before search_text')
+        search_text.delay(json['email'], json['searchText'])
     except:
         abort(404)
     return "", 200
@@ -87,39 +88,50 @@ def search_text(email, searching_text):
             }
         }
     }
-
+    app.logger.warning('requet_data')
     request_data = dumps(request_data)
     # count time for searching
+    app.logger.warning('start_time')
     start_time = time.time()
-
+    app.logger.warning('result_')
     result_search = 'Result by searching with word: "{}"\n'.format(searching_text)
     # send search request with data
+    app.logger.warning('request_get')
+    # ##################
     res = requests.get('{0}/books/_search?pretty'.format(app.config['ES_URL']), data=request_data).json()
     # parsing response from request
-    if res['hits']['total']:  # checking if we have some result
-        try:
-            for hit in res['hits']['hits']:
-                book_id = hit['_id']
-                book_name = hit['_type']
-                data_book = requests.get('{0}/books/{1}/{2}?pretty'.format(app.config['ES_URL'], book_name, book_id),
-                                         data=request_data).json()
-                book_chapter = data_book['_source']['chapter']
-                book_page = data_book['_id']
+    app.logger.warning(res)
+    app.logger.warning('aftert request')
+    app.logger.warning(res['status'] != 404)
+    if res['status'] != 404:
+        if res['hits']['total']:  # checking if we have some result
+            try:
+                for hit in res['hits']['hits']:
+                    book_id = hit['_id']
+                    book_name = hit['_type']
+                    # ##################
+                    data_book = requests.get('{0}/books/{1}/{2}?pretty'.format(app.config['ES_URL'], book_name, book_id),
+                                             data=request_data).json()
+                    book_chapter = data_book['_source']['chapter']
+                    book_page = data_book['_id']
 
-                result_search += "Find in book: {0}\nChapter: {1}\nPage: {2}\n".format(book_name, book_chapter,
+                    result_search += "Find in book: {0}\nChapter: {1}\nPage: {2}\n".format(book_name, book_chapter,
                                                                                        book_page)
-        except Exception as e:
-            result_search += "Oops. something going wrong. We do all best to fix it "
-            abort(500)
+            except Exception as e:
+                result_search += "Oops. something going wrong. We do all best to fix it "
+                abort(500)
 
     else:  # if result is none
         result_search += "Not found any text with this word"
     # searching time
+    app.logger.warning(result_search)
     end_time = time.time() - start_time
     # get logger for writing how much time we search
-    logger = get_custom_logger()
-    logger.info('Time for search by word "{0}" is {1}'.format(searching_text, end_time))
-
+    app.logger.warning('getcustomer')
+    # logger = get_custom_logger()
+    app.logger.warning('logerinfo')
+    # logger.info('Time for search by word "{0}" is {1}'.format(searching_text, end_time))
+    app.logger.warning('loger info')
     send_email(result_search, email)
     return result_search
 
@@ -133,11 +145,14 @@ def send_email(message_string, email):
     """
     # with mail.connect() as conn:  # get server connection
     subject = "Search result in books"
+    app.logger.warning('Send Email')
     # create message for sending
     msg = Message(recipients=[email],
                   body=message_string,
                   subject=subject,
                   sender=app.config['MAIL_USERNAME'])
+    app.logger.warning(Message)
+    app.logger.warning(app.config['MAIL_USERNAME'])
     mail.send(msg)
 
 

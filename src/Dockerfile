@@ -7,3 +7,4 @@ COPY . /app
 WORKDIR /app
 ADD requirements.txt /app
 RUN pip install -r requirements.txt
+CMD ["test_books.py"]
