@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  elastic:
+    image: elasticsearch
+    ports:
+      - "41800:9200"
+  redis:
+    image: redis
+    ports:
+      - "41900:6379"
+  celery:
+    image: celery
+    environment:
+      - C_FORCE_ROOT=true
+      - DATABASE_HOST=redis
+      - BROKER_URL=redis://redis:6379
+    command: bash -c "sleep 3 && celery -A test_books.celery worker -E -l info --concurrency=3"
+    links:
+      - redis
+  test-books-img:
+    build: ./src
+    command: python -u test_books.py
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elastic
+      - celery
