@@ -16,7 +16,7 @@ services:
       - DATABASE_HOST=redis
       - BROKER_URL=redis://redis:6379
     command: bash -c "sleep 3 && celery -A test_books.celery worker -E -l info --concurrency=3"
-    links:
+    depends_on:
       - redis
   test-books-img:
     build: ./src
