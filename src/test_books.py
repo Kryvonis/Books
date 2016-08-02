@@ -48,7 +48,7 @@ def index():
     :return rendered page in html:
     """
 
-    app.logger.warning('AFTER REQUEST')
+
     return render_template('TestBooks/index.html')
 
 
