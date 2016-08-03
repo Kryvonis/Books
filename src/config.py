@@ -20,7 +20,7 @@ class DevelopmentConfig(Config):
     CELERY_IMPORTS = 'test_books'
     # LOG FILE SRC
 
-    LOG_FILE = '/Users/user/PycharmProjects/TestBooks/logging.log'
+    LOG_FILE = ''
     # URL FOR ELASTICSEARCH
     ES_URL = 'http://elastic:9200'
 
