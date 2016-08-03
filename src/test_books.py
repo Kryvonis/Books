@@ -10,7 +10,7 @@ from config import config
 
 app = Flask(__name__)
 app.config.from_object(config['development'])
-# config['development'].init_app(app)
+
 
 # variable for sending Emaill
 mail = Mail(app)
@@ -99,13 +99,12 @@ def search_text(email, searching_text):
     res = requests.get('{0}/books/_search?pretty'.format(app.config['ES_URL']), data=request_data).json()
     # parsing response from request
 
-    if res['status'] != 404:
+    if res.get('status',None) != 404:
         if res['hits']['total']:  # checking if we have some result
             try:
                 for hit in res['hits']['hits']:
                     book_id = hit['_id']
                     book_name = hit['_type']
-                    # ##################
                     data_book = requests.get(
                         '{0}/books/{1}/{2}?pretty'.format(app.config['ES_URL'], book_name, book_id),
                         data=request_data).json()
@@ -125,9 +124,9 @@ def search_text(email, searching_text):
     end_time = time.time() - start_time
     # get logger for writing how much time we search
 
-    # logger = get_custom_logger()
+    logger = get_custom_logger()
 
-    # logger.info('Time for search by word "{0}" is {1}'.format(searching_text, end_time))
+    logger.info('Time for search by word "{0}" is {1}'.format(searching_text, end_time))
 
     send_email(result_search, email)
     return result_search

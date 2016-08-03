@@ -3,16 +3,16 @@ services:
   elastic:
     image: elasticsearch
     ports:
-      - "9200:9200"
+      - "49200:9200"
   redis:
     image: redis
     ports:
-      - "6379:6379"
+      - "49300:6379"
   test-books-img:
     build: ./src
     command: python /app/test_books.py
     ports:
-      - "5000:5000"
+      - "49400:5000"
     depends_on:
       - elastic
   celery:
